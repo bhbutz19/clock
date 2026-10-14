@@ -5,3 +5,5 @@ deployment:
     - export DEPLOYPATH=/home/cowboybu/public_html/clock.cowboybutz.com/
     - /bin/mkdir -p "$DEPLOYPATH"
     - /bin/cp index.html "$DEPLOYPATH/index.html"
+    - /bin/mkdir -p "$DEPLOYPATH/api"
+    - /bin/cp api/time.php "$DEPLOYPATH/api/time.php"

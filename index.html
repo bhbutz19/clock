@@ -33,6 +33,14 @@ main.screensaver #controls,main.screensaver:hover #controls{opacity:0;pointer-ev
 main.screensaver:focus-within #controls{opacity:1;pointer-events:auto}
 main:fullscreen.screensaver #controls,main:fullscreen.screensaver:hover #controls{opacity:0;visibility:hidden;pointer-events:none}
 main.screensaver #settingsPanel{display:none}
+#syncStatus{position:absolute;bottom:18px;left:18px;font:600 11px Arial,sans-serif;letter-spacing:.07em;color:#b7aa91;opacity:.55}
+#syncStatus[data-state='ok']{color:#8cda9f}#syncStatus[data-state='error']{color:#e4ad83}
+main.screensaver #syncStatus{opacity:0}
+#syncSetting{margin:16px 0;padding-top:12px;border-top:1px solid #554733}
+#syncSetting label{display:flex;align-items:center;gap:10px;cursor:pointer}
+#syncSetting input{width:18px;height:18px;accent-color:#f2bf68}
+#syncSetting button{margin-top:10px}
+#syncDetail{font-size:12px;color:#bbaf9e;margin-top:7px;line-height:1.4}
 button{background:#302820;border:1px solid #665439;color:var(--accent);border-radius:4px;padding:10px;cursor:pointer}
 @media(max-width:700px){#layout{gap:16px}#controls{opacity:.4}.flap{width:20.5vw;height:39vw}.glyph{font-size:34vw}.colon{height:39vw}#ampm{align-self:flex-end}}
 @media(max-height:600px){#layout{gap:12px;padding:1vh 1vw}.flap{width:min(20vw,31vh);height:min(35vw,56vh)}.glyph{font-size:min(30vw,51vh)}.colon{height:min(35vw,56vh)}#dateLine{gap:6px}.drum{--item-h:clamp(30px,6vh,45px)}}
@@ -53,16 +61,27 @@ button{background:#302820;border:1px solid #665439;color:var(--accent);border-ra
 #settingsPanel .actions button{flex:1}
 #settingsPanel p{color:#bdb19c;font-size:12px;line-height:1.45}
 @media(max-width:700px){#settingsPanel{bottom:60px;padding:15px}}
-</style></head><body><main id="board" role="timer"><div id="layout"><div id="clock" aria-hidden="true"><div class="group" id="hours"></div><div class="colon"><i></i><i></i></div><div class="group" id="minutes"></div><div id="ampm" class="drum" aria-hidden="true"></div></div><div id="dateLine" aria-hidden="true"><div class="drumUnit"><span class="drumLabel">DAY</span><div id="weekdayDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">MONTH</span><div id="monthDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">DATE</span><div id="dayDrum" class="drum"></div></div><div class="drumUnit"><span class="drumLabel">YEAR</span><div id="yearDrum" class="drum year"></div></div></div></div><div id="controls"><button id="settingsButton" type="button" aria-expanded="false" aria-controls="settingsPanel">SETTINGS</button><button id="format">24H</button><button id="sound">SOUND OFF</button><button id="fullscreen">FULLSCREEN</button></div><section id="settingsPanel" aria-label="Clock appearance settings" hidden>
+</style></head><body><main id="board" role="timer"><div id="layout"><div id="clock" aria-hidden="true"><div class="group" id="hours"></div><div class="colon"><i></i><i></i></div><div class="group" id="minutes"></div><div id="ampm" class="drum" aria-hidden="true"></div></div><div id="dateLine" aria-hidden="true"><div class="drumUnit"><span class="drumLabel">DAY</span><div id="weekdayDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">MONTH</span><div id="monthDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">DATE</span><div id="dayDrum" class="drum"></div></div><div class="drumUnit"><span class="drumLabel">YEAR</span><div id="yearDrum" class="drum year"></div></div></div></div><div id="syncStatus" aria-live="polite" data-state="local">DEVICE TIME</div><div id="controls"><button id="settingsButton" type="button" aria-expanded="false" aria-controls="settingsPanel">SETTINGS</button><button id="format">24H</button><button id="sound">SOUND OFF</button><button id="fullscreen">FULLSCREEN</button></div><section id="settingsPanel" aria-label="Clock appearance settings" hidden>
 <h2>Clock appearance</h2>
 <div class="setting"><label for="accentHex">Lettering and digits</label><div class="colorRow"><input id="accentPicker" type="color" aria-label="Choose lettering color"><input id="accentHex" type="text" spellcheck="false" maxlength="7" placeholder="#F2BF68" aria-label="Lettering HEX color"></div><div id="accentPalette" class="palette" aria-label="Lettering presets"></div></div>
 <div class="setting"><label for="backgroundHex">Screen background</label><div class="colorRow"><input id="backgroundPicker" type="color" aria-label="Choose screen background color"><input id="backgroundHex" type="text" spellcheck="false" maxlength="7" placeholder="#090909" aria-label="Background HEX color"></div><div id="backgroundPalette" class="palette" aria-label="Background presets"></div></div>
 <div class="setting"><label for="tileHex">Mechanical panel background</label><div class="colorRow"><input id="tilePicker" type="color" aria-label="Choose panel background color"><input id="tileHex" type="text" spellcheck="false" maxlength="7" placeholder="#1C1B18" aria-label="Panel HEX color"></div><div id="tilePalette" class="palette" aria-label="Panel presets"></div></div>
 <p>Choose a swatch, use the color picker, or enter an exact HEX code. Changes are saved automatically on this device.</p>
+<div id="syncSetting"><label><input id="syncEnabled" type="checkbox"> Sync clock with website server</label><button id="syncNow" type="button">SYNC NOW</button><div id="syncDetail" aria-live="polite">Device time (no server correction).</div><p>Checks every 15 minutes while this page is open. Uses the website server clock to estimate drift; this is not a verification of device NTP synchronization.</p></div>
 <div class="actions"><button id="resetColors" type="button">RESET COLORS</button><button id="closeSettings" type="button">DONE</button></div>
 </section></main>
 <script>
 (()=>{const slots=[],board=document.getElementById('board'),ampm=document.getElementById('ampm');let is24=localStorage.clock24==='true',sound=localStorage.clockSound==='true',ctx=null;
+let syncEnabled=localStorage.getItem('clockSyncEnabled')==='true',offsetMs=0,lastSyncedAt=0,syncBusy=false,syncTimer=null;
+const syncStatus=document.getElementById('syncStatus'),syncDetail=document.getElementById('syncDetail'),syncCheckbox=document.getElementById('syncEnabled');
+function clockNow(){return new Date(Date.now()+(syncEnabled&&lastSyncedAt?offsetMs:0))}
+function syncMessage(status,detail,state){syncStatus.textContent=status;syncStatus.dataset.state=state;syncDetail.textContent=detail}
+async function synchronize(){if(!syncEnabled||syncBusy)return;syncBusy=true;syncMessage('CHECKING TIME','Contacting the website server…','local');
+ try{const start=Date.now(),response=await fetch('api/time.php?ts='+start,{cache:'no-store',signal:AbortSignal.timeout(8000)}),end=Date.now();if(!response.ok)throw new Error('Server returned '+response.status);const data=await response.json();if(!Number.isFinite(data.unix_ms))throw new Error('Invalid server time');const latency=end-start;if(latency>3000)throw new Error('Network delay too high');offsetMs=data.unix_ms-(start+latency/2);lastSyncedAt=end;syncMessage('SERVER SYNC',`Compared with server: ${Math.round(offsetMs)} ms correction · network round trip ${latency} ms. Last checked ${new Date().toLocaleTimeString()}.`,'ok');draw(true)}
+ catch(e){lastSyncedAt=0;offsetMs=0;syncMessage('DEVICE TIME','Server time unavailable ('+e.message+'). Using device time until the next retry.','error');draw(true)}finally{syncBusy=false}}
+function configureSync(){clearInterval(syncTimer);syncCheckbox.checked=syncEnabled;if(syncEnabled){synchronize();syncTimer=setInterval(()=>{if(!document.hidden)synchronize()},15*60*1000)}else{lastSyncedAt=0;offsetMs=0;syncMessage('DEVICE TIME','Using device time with no correction.','local');draw(true)}}
+syncCheckbox.addEventListener('change',()=>{syncEnabled=syncCheckbox.checked;localStorage.setItem('clockSyncEnabled',String(syncEnabled));configureSync()});
+document.getElementById('syncNow').addEventListener('click',()=>{if(!syncEnabled){syncEnabled=true;localStorage.setItem('clockSyncEnabled','true');syncCheckbox.checked=true;configureSync()}else synchronize()});
 function half(v,part,extra=''){const el=document.createElement('div');el.className='half '+part+' '+extra;const glyph=document.createElement('span');glyph.className='glyph';glyph.textContent=v;el.append(glyph);return el}
 function face(el,v){el.replaceChildren(half(v,'top'),half(v,'bottom'));el.dataset.v=v}
 for(const box of [document.getElementById('hours'),document.getElementById('minutes')])for(let i=0;i<2;i++){const el=document.createElement('div');el.className='flap';face(el,'0');box.append(el);slots.push(el)}
@@ -87,12 +106,12 @@ d.track.style.transition='none';d.track.style.transform='translateY(0)';
 if(instant||reduce||prior===null){d.track.style.transform='translateY(calc(-1 * var(--item-h)))';return}
 requestAnimationFrame(()=>requestAnimationFrame(()=>{d.track.style.transition='transform .75s cubic-bezier(.15,.65,.22,1)';d.track.style.transform='translateY(calc(-1 * var(--item-h)))';}));
 }
-function draw(instant=false){const d=new Date(),hour=d.getHours(),h=is24?hour:hour%12||12;const value=String(h).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');const weekday=new Intl.DateTimeFormat('en-US',{weekday:'long'}).format(d),dayDate=new Intl.DateTimeFormat('en-US',{month:'long',day:'numeric',year:'numeric'}).format(d);ampm.style.display=is24?'none':'';roll('ampm',hour>=12?'PM':'AM',instant);roll('weekdayDrum',['SUN','MON','TUE','WED','THU','FRI','SAT'][d.getDay()],instant);roll('monthDrum',['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()],instant);roll('dayDrum',String(d.getDate()).padStart(2,'0'),instant);roll('yearDrum',String(d.getFullYear()),instant);board.setAttribute('aria-label','Current time '+h+':'+value.slice(2)+(is24?'':(hour>=12?' PM':' AM'))+', '+weekday+', '+dayDate);slots.forEach((el,i)=>{if(instant)face(el,value[i]);else if(el.dataset.v!==value[i])setTimeout(()=>flip(el,value[i]),i*75)})}
-function tick(){draw();setTimeout(tick,1000-new Date().getMilliseconds()+20)}
+function draw(instant=false){const d=clockNow(),hour=d.getHours(),h=is24?hour:hour%12||12;const value=String(h).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');const weekday=new Intl.DateTimeFormat('en-US',{weekday:'long'}).format(d),dayDate=new Intl.DateTimeFormat('en-US',{month:'long',day:'numeric',year:'numeric'}).format(d);ampm.style.display=is24?'none':'';roll('ampm',hour>=12?'PM':'AM',instant);roll('weekdayDrum',['SUN','MON','TUE','WED','THU','FRI','SAT'][d.getDay()],instant);roll('monthDrum',['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()],instant);roll('dayDrum',String(d.getDate()).padStart(2,'0'),instant);roll('yearDrum',String(d.getFullYear()),instant);board.setAttribute('aria-label','Current time '+h+':'+value.slice(2)+(is24?'':(hour>=12?' PM':' AM'))+', '+weekday+', '+dayDate);slots.forEach((el,i)=>{if(instant)face(el,value[i]);else if(el.dataset.v!==value[i])setTimeout(()=>flip(el,value[i]),i*75)})}
+function tick(){draw();setTimeout(tick,1000-(Date.now()+offsetMs)%1000+20)}
 const format=document.getElementById('format'),soundBtn=document.getElementById('sound'),full=document.getElementById('fullscreen');
 format.onclick=()=>{is24=!is24;localStorage.clock24=is24;format.textContent=is24?'12H':'24H';draw(true)};
 soundBtn.onclick=()=>{sound=!sound;localStorage.clockSound=sound;soundBtn.textContent=sound?'SOUND ON':'SOUND OFF'};
-full.onclick=()=>document.fullscreenElement?document.exitFullscreen():board.requestFullscreen?.();document.addEventListener('fullscreenchange',()=>full.textContent=document.fullscreenElement?'EXIT FULLSCREEN':'FULLSCREEN');board.addEventListener('dblclick',e=>{if(!e.target.closest('button'))full.click()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)draw(true)});
+full.onclick=()=>document.fullscreenElement?document.exitFullscreen():board.requestFullscreen?.();document.addEventListener('fullscreenchange',()=>full.textContent=document.fullscreenElement?'EXIT FULLSCREEN':'FULLSCREEN');board.addEventListener('dblclick',e=>{if(!e.target.closest('button'))full.click()});document.addEventListener('visibilitychange',()=>{if(!document.hidden){draw(true);if(syncEnabled&&Date.now()-lastSyncedAt>15*60*1000)synchronize()}});
 // Automatically hide controls and pointer after five seconds of inactivity.
 let idleTimer;
 function wake(){
@@ -134,5 +153,5 @@ settingsButton.addEventListener('click',()=>{panel.hidden=!panel.hidden;settings
 document.getElementById('closeSettings').addEventListener('click',closeSettings);
 document.getElementById('resetColors').addEventListener('click',()=>{for(const key of Object.keys(defaults))setColor(key,defaults[key])});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)closeSettings()});
-format.textContent=is24?'12H':'24H';soundBtn.textContent=sound?'SOUND ON':'SOUND OFF';draw(true);tick();wake()})();
+format.textContent=is24?'12H':'24H';soundBtn.textContent=sound?'SOUND ON':'SOUND OFF';draw(true);tick();wake();configureSync()})();
 </script></body></html>

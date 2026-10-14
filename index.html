@@ -3,33 +3,36 @@
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090909;color:#f2bf68;font-family:Arial,sans-serif}
 main{width:100vw;height:100dvh;display:flex;justify-content:center;align-items:center;background:radial-gradient(ellipse at center,#201d17,#060606 75%);border:clamp(5px,.9vmin,14px) solid #28241d;box-shadow:inset 0 0 0 3px #5b513f}
-#clock{display:flex;width:96%;justify-content:center;align-items:center;gap:min(1vw,16px);user-select:none}
-.group{display:flex;gap:min(.4vw,8px)}
-.flap{position:relative;width:min(18vw,26vh);height:min(32vw,47vh);border:1px solid #4f473a;border-radius:5px;background:linear-gradient(#292721 0%,#1c1b18 49%,#10100d 51%,#181713 100%);box-shadow:inset 0 2px #544a37,0 9px 15px #000b;perspective:700px;overflow:hidden}
+#layout{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;gap:clamp(14px,2.5vh,32px);padding:2vh 1vw 4vh}
+#clock{display:flex;width:99%;justify-content:center;align-items:center;gap:min(.65vw,12px);user-select:none}
+.group{display:flex;gap:min(.27vw,7px)}
+.flap{position:relative;width:min(20.8vw,36vh);height:min(36.5vw,64vh);border:1px solid #4f473a;border-radius:5px;background:linear-gradient(#292721 0%,#1c1b18 49%,#10100d 51%,#181713 100%);box-shadow:inset 0 2px #544a37,0 9px 15px #000b;perspective:700px;overflow:hidden}
 .half{position:absolute;left:0;width:100%;height:50%;overflow:hidden;backface-visibility:hidden}.top{top:0}.bottom{bottom:0}
-.glyph{position:absolute;left:0;width:100%;height:200%;display:flex;align-items:center;justify-content:center;font:900 min(28vw,42vh)/1 Impact,'Arial Narrow',sans-serif;transform:scaleX(.88);text-shadow:0 2px #000}.top .glyph{top:0}.bottom .glyph{bottom:0}
+.glyph{position:absolute;left:0;width:100%;height:200%;display:flex;align-items:center;justify-content:center;font:900 min(32vw,59vh)/1 Impact,'Arial Narrow',sans-serif;transform:scaleX(.88);text-shadow:0 2px #000}.top .glyph{top:0}.bottom .glyph{bottom:0}
 .flap:after{content:'';position:absolute;z-index:10;top:50%;width:100%;height:3px;transform:translateY(-50%);background:#060606;box-shadow:0 1px #4e473b}
 .moveTop,.moveBottom{display:none;z-index:5}.flipping .moveTop,.flipping .moveBottom{display:block}
 .moveTop{transform-origin:bottom;animation:foldtop .2s ease-in both}.moveBottom{transform-origin:top;animation:foldbottom .2s .2s ease-out both}
 @keyframes foldtop{to{transform:rotateX(-90deg);filter:brightness(.5)}}@keyframes foldbottom{from{transform:rotateX(90deg);filter:brightness(.5)}to{transform:rotateX(0)}}
-.colon{display:flex;flex-direction:column;gap:12%;justify-content:center;align-items:center;width:min(3vw,4vh);height:min(32vw,47vh)}.colon i{width:clamp(4px,1vw,15px);height:clamp(4px,1vw,15px);background:#f2bf68}
-#ampm{font:900 clamp(15px,4vw,60px) Impact,Arial,sans-serif;align-self:flex-end;padding-bottom:1vw;min-width:2ch}
+.colon{display:flex;flex-direction:column;gap:12%;justify-content:center;align-items:center;width:min(3vw,5vh);height:min(36.5vw,64vh)}.colon i{width:clamp(4px,1vw,15px);height:clamp(4px,1vw,15px);background:#f2bf68}
+#ampm{font:900 clamp(15px,4.4vw,72px) Impact,Arial,sans-serif;align-self:flex-end;padding-bottom:1vw;min-width:2ch}
+#dateLine{color:#f2ecdf;font:700 clamp(18px,2.3vw,36px)/1.2 Arial,sans-serif;text-transform:uppercase;letter-spacing:.16em;text-align:center}
 #controls{position:absolute;right:15px;bottom:15px;display:flex;gap:8px;opacity:.06;transition:opacity .2s}main:hover #controls,#controls:focus-within{opacity:1}
 main.screensaver{cursor:none}
 main.screensaver #controls,main.screensaver:hover #controls{opacity:0;pointer-events:none}
 main.screensaver:focus-within #controls{opacity:1;pointer-events:auto}
 button{background:#302820;border:1px solid #665439;color:#f2bf68;border-radius:4px;padding:10px;cursor:pointer}
-@media(max-width:700px){#controls{opacity:.4}.flap{width:19vw;height:36vw}.glyph{font-size:32vw}.colon{height:36vw}#ampm{font-size:5vw}}
+@media(max-width:700px){#layout{gap:16px}#controls{opacity:.4}.flap{width:20.5vw;height:39vw}.glyph{font-size:34vw}.colon{height:39vw}#ampm{font-size:5vw}#dateLine{font-size:3.9vw;letter-spacing:.1em}}
+@media(max-height:600px){#layout{gap:12px;padding:1vh 1vw}.flap{width:min(20vw,31vh);height:min(35vw,56vh)}.glyph{font-size:min(30vw,51vh)}.colon{height:min(35vw,56vh)}#dateLine{font-size:clamp(14px,2vw,26px)}}
 @media(prefers-reduced-motion:reduce){.flipping .moveTop,.flipping .moveBottom{display:none}}
-</style></head><body><main id="board" role="timer"><div id="clock" aria-hidden="true"><div class="group" id="hours"></div><div class="colon"><i></i><i></i></div><div class="group" id="minutes"></div><div id="ampm">AM</div></div><div id="controls"><button id="format">24H</button><button id="sound">SOUND OFF</button><button id="fullscreen">FULLSCREEN</button></div></main>
+</style></head><body><main id="board" role="timer"><div id="layout"><div id="clock" aria-hidden="true"><div class="group" id="hours"></div><div class="colon"><i></i><i></i></div><div class="group" id="minutes"></div><div id="ampm">AM</div></div><div id="dateLine" aria-live="off"></div></div><div id="controls"><button id="format">24H</button><button id="sound">SOUND OFF</button><button id="fullscreen">FULLSCREEN</button></div></main>
 <script>
-(()=>{const slots=[],board=document.getElementById('board'),ampm=document.getElementById('ampm');let is24=localStorage.clock24==='true',sound=localStorage.clockSound==='true',ctx=null;
+(()=>{const slots=[],board=document.getElementById('board'),ampm=document.getElementById('ampm'),dateLine=document.getElementById('dateLine');let is24=localStorage.clock24==='true',sound=localStorage.clockSound==='true',ctx=null;
 function half(v,part,extra=''){const el=document.createElement('div');el.className='half '+part+' '+extra;const glyph=document.createElement('span');glyph.className='glyph';glyph.textContent=v;el.append(glyph);return el}
 function face(el,v){el.replaceChildren(half(v,'top'),half(v,'bottom'));el.dataset.v=v}
 for(const box of [document.getElementById('hours'),document.getElementById('minutes')])for(let i=0;i<2;i++){const el=document.createElement('div');el.className='flap';face(el,'0');box.append(el);slots.push(el)}
 function soundClick(){if(!sound)return;try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator(),gain=ctx.createGain(),now=ctx.currentTime;osc.type='square';osc.frequency.value=110;gain.gain.setValueAtTime(.014,now);gain.gain.exponentialRampToValueAtTime(.0001,now+.035);osc.connect(gain).connect(ctx.destination);osc.start(now);osc.stop(now+.04)}catch(e){}}
 function flip(el,v){if(el.dataset.v===v)return;const old=el.dataset.v;if(matchMedia('(prefers-reduced-motion: reduce)').matches){face(el,v);return}el.querySelectorAll('.moveTop,.moveBottom').forEach(n=>n.remove());const a=half(old,'top','moveTop'),b=half(v,'bottom','moveBottom');el.append(a,b);el.classList.remove('flipping');void el.offsetWidth;el.classList.add('flipping');soundClick();setTimeout(()=>{face(el,v);el.classList.remove('flipping')},420)}
-function draw(instant=false){const d=new Date(),hour=d.getHours(),h=is24?hour:hour%12||12;const value=String(h).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');ampm.textContent=is24?'':hour>=12?'PM':'AM';board.setAttribute('aria-label','Current time '+h+':'+value.slice(2)+' '+ampm.textContent);slots.forEach((el,i)=>{if(instant)face(el,value[i]);else if(el.dataset.v!==value[i])setTimeout(()=>flip(el,value[i]),i*75)})}
+function draw(instant=false){const d=new Date(),hour=d.getHours(),h=is24?hour:hour%12||12;const value=String(h).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');ampm.textContent=is24?'':hour>=12?'PM':'AM';const weekday=new Intl.DateTimeFormat('en-US',{weekday:'long'}).format(d),dayDate=new Intl.DateTimeFormat('en-US',{month:'long',day:'numeric',year:'numeric'}).format(d);dateLine.textContent=weekday+' · '+dayDate;board.setAttribute('aria-label','Current time '+h+':'+value.slice(2)+' '+ampm.textContent+', '+weekday+', '+dayDate);slots.forEach((el,i)=>{if(instant)face(el,value[i]);else if(el.dataset.v!==value[i])setTimeout(()=>flip(el,value[i]),i*75)})}
 function tick(){draw();setTimeout(tick,1000-new Date().getMilliseconds()+20)}
 const format=document.getElementById('format'),soundBtn=document.getElementById('sound'),full=document.getElementById('fullscreen');
 format.onclick=()=>{is24=!is24;localStorage.clock24=is24;format.textContent=is24?'12H':'24H';draw(true)};

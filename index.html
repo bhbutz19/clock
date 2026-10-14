@@ -14,26 +14,55 @@ main{width:100vw;height:100dvh;display:flex;justify-content:center;align-items:c
 .moveTop{transform-origin:bottom;animation:foldtop .2s ease-in both}.moveBottom{transform-origin:top;animation:foldbottom .2s .2s ease-out both}
 @keyframes foldtop{to{transform:rotateX(-90deg);filter:brightness(.5)}}@keyframes foldbottom{from{transform:rotateX(90deg);filter:brightness(.5)}to{transform:rotateX(0)}}
 .colon{display:flex;flex-direction:column;gap:12%;justify-content:center;align-items:center;width:min(3vw,5vh);height:min(36.5vw,64vh)}.colon i{width:clamp(4px,1vw,15px);height:clamp(4px,1vw,15px);background:#f2bf68}
-#ampm{font:900 clamp(15px,4.4vw,72px) Impact,Arial,sans-serif;align-self:flex-end;padding-bottom:1vw;min-width:2ch}
-#dateLine{color:#f2ecdf;font:700 clamp(18px,2.3vw,36px)/1.2 Arial,sans-serif;text-transform:uppercase;letter-spacing:.16em;text-align:center}
+#ampm{width:clamp(47px,7vw,115px);height:clamp(45px,9vh,94px);align-self:flex-end}
+#dateLine{display:flex;align-items:flex-start;justify-content:center;gap:clamp(7px,1.1vw,18px);max-width:98vw;flex-wrap:wrap}
+.drumUnit{display:flex;flex-direction:column;align-items:center;gap:5px}
+.drumLabel{font:700 clamp(10px,.9vw,14px) Arial,sans-serif;letter-spacing:.2em;color:#9d927a}
+.drum{--item-h:clamp(40px,5.5vw,72px);position:relative;width:clamp(65px,8vw,110px);height:var(--item-h);border:3px solid #3d362e;border-radius:9px;overflow:hidden;background:linear-gradient(#ebe8df,#cfc9bb);box-shadow:inset 0 1px 6px #0009,0 5px 12px #000b}
+.drum.wide{width:clamp(100px,13vw,175px)}.drum.year{width:clamp(95px,10vw,135px)}
+.drum:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to bottom,#0008,transparent 30%,#fff2 50%,transparent 72%,#0007);box-shadow:inset 6px 0 7px #0006,inset -6px 0 7px #0006}
+.drum:after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-left:2px solid #b9b3a5;border-right:2px solid #b9b3a5}
+.drumTrack{position:absolute;top:0;left:0;right:0;will-change:transform}
+.drumItem{height:var(--item-h);display:flex;align-items:center;justify-content:center;color:#3f4345;font:900 clamp(22px,3.15vw,47px) Impact,'Arial Narrow',sans-serif;letter-spacing:.02em;white-space:nowrap}
+.drum.wide .drumItem{font-size:clamp(21px,2.9vw,42px)}#ampm .drumItem{font-size:clamp(20px,2.5vw,38px)}
+@media(max-width:700px){.drum{--item-h:clamp(32px,8vw,48px);width:clamp(50px,13vw,76px)}.drum.wide{width:clamp(86px,23vw,120px)}.drum.year{width:clamp(77px,19vw,99px)}.drumItem{font-size:clamp(20px,5vw,27px)}.drum.wide .drumItem{font-size:clamp(18px,4.5vw,26px)}.drumLabel{font-size:9px}#ampm{width:clamp(37px,9vw,60px);height:clamp(32px,8vw,48px)}}
 #controls{position:absolute;right:15px;bottom:15px;display:flex;gap:8px;opacity:.06;transition:opacity .2s}main:hover #controls,#controls:focus-within{opacity:1}
 main.screensaver{cursor:none}
 main.screensaver #controls,main.screensaver:hover #controls{opacity:0;pointer-events:none}
 main.screensaver:focus-within #controls{opacity:1;pointer-events:auto}
 main:fullscreen.screensaver #controls,main:fullscreen.screensaver:hover #controls{opacity:0;visibility:hidden;pointer-events:none}
 button{background:#302820;border:1px solid #665439;color:#f2bf68;border-radius:4px;padding:10px;cursor:pointer}
-@media(max-width:700px){#layout{gap:16px}#controls{opacity:.4}.flap{width:20.5vw;height:39vw}.glyph{font-size:34vw}.colon{height:39vw}#ampm{font-size:5vw}#dateLine{font-size:3.9vw;letter-spacing:.1em}}
-@media(max-height:600px){#layout{gap:12px;padding:1vh 1vw}.flap{width:min(20vw,31vh);height:min(35vw,56vh)}.glyph{font-size:min(30vw,51vh)}.colon{height:min(35vw,56vh)}#dateLine{font-size:clamp(14px,2vw,26px)}}
+@media(max-width:700px){#layout{gap:16px}#controls{opacity:.4}.flap{width:20.5vw;height:39vw}.glyph{font-size:34vw}.colon{height:39vw}#ampm{align-self:flex-end}}
+@media(max-height:600px){#layout{gap:12px;padding:1vh 1vw}.flap{width:min(20vw,31vh);height:min(35vw,56vh)}.glyph{font-size:min(30vw,51vh)}.colon{height:min(35vw,56vh)}#dateLine{gap:6px}.drum{--item-h:clamp(30px,6vh,45px)}}
 @media(prefers-reduced-motion:reduce){.flipping .moveTop,.flipping .moveBottom{display:none}}
-</style></head><body><main id="board" role="timer"><div id="layout"><div id="clock" aria-hidden="true"><div class="group" id="hours"></div><div class="colon"><i></i><i></i></div><div class="group" id="minutes"></div><div id="ampm">AM</div></div><div id="dateLine" aria-live="off"></div></div><div id="controls"><button id="format">24H</button><button id="sound">SOUND OFF</button><button id="fullscreen">FULLSCREEN</button></div></main>
+</style></head><body><main id="board" role="timer"><div id="layout"><div id="clock" aria-hidden="true"><div class="group" id="hours"></div><div class="colon"><i></i><i></i></div><div class="group" id="minutes"></div><div id="ampm" class="drum" aria-hidden="true"></div></div><div id="dateLine" aria-hidden="true"><div class="drumUnit"><span class="drumLabel">DAY</span><div id="weekdayDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">MONTH</span><div id="monthDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">DATE</span><div id="dayDrum" class="drum"></div></div><div class="drumUnit"><span class="drumLabel">YEAR</span><div id="yearDrum" class="drum year"></div></div></div></div><div id="controls"><button id="format">24H</button><button id="sound">SOUND OFF</button><button id="fullscreen">FULLSCREEN</button></div></main>
 <script>
-(()=>{const slots=[],board=document.getElementById('board'),ampm=document.getElementById('ampm'),dateLine=document.getElementById('dateLine');let is24=localStorage.clock24==='true',sound=localStorage.clockSound==='true',ctx=null;
+(()=>{const slots=[],board=document.getElementById('board'),ampm=document.getElementById('ampm');let is24=localStorage.clock24==='true',sound=localStorage.clockSound==='true',ctx=null;
 function half(v,part,extra=''){const el=document.createElement('div');el.className='half '+part+' '+extra;const glyph=document.createElement('span');glyph.className='glyph';glyph.textContent=v;el.append(glyph);return el}
 function face(el,v){el.replaceChildren(half(v,'top'),half(v,'bottom'));el.dataset.v=v}
 for(const box of [document.getElementById('hours'),document.getElementById('minutes')])for(let i=0;i<2;i++){const el=document.createElement('div');el.className='flap';face(el,'0');box.append(el);slots.push(el)}
 function soundClick(){if(!sound)return;try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator(),gain=ctx.createGain(),now=ctx.currentTime;osc.type='square';osc.frequency.value=110;gain.gain.setValueAtTime(.014,now);gain.gain.exponentialRampToValueAtTime(.0001,now+.035);osc.connect(gain).connect(ctx.destination);osc.start(now);osc.stop(now+.04)}catch(e){}}
 function flip(el,v){if(el.dataset.v===v)return;const old=el.dataset.v;if(matchMedia('(prefers-reduced-motion: reduce)').matches){face(el,v);return}el.querySelectorAll('.moveTop,.moveBottom').forEach(n=>n.remove());const a=half(old,'top','moveTop'),b=half(v,'bottom','moveBottom');el.append(a,b);el.classList.remove('flipping');void el.offsetWidth;el.classList.add('flipping');soundClick();setTimeout(()=>{face(el,v);el.classList.remove('flipping')},420)}
-function draw(instant=false){const d=new Date(),hour=d.getHours(),h=is24?hour:hour%12||12;const value=String(h).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');ampm.textContent=is24?'':hour>=12?'PM':'AM';const weekday=new Intl.DateTimeFormat('en-US',{weekday:'long'}).format(d),dayDate=new Intl.DateTimeFormat('en-US',{month:'long',day:'numeric',year:'numeric'}).format(d);dateLine.textContent=weekday+' · '+dayDate;board.setAttribute('aria-label','Current time '+h+':'+value.slice(2)+' '+ampm.textContent+', '+weekday+', '+dayDate);slots.forEach((el,i)=>{if(instant)face(el,value[i]);else if(el.dataset.v!==value[i])setTimeout(()=>flip(el,value[i]),i*75)})}
+// Pre-render the roller belts, then advance by one segment per change.
+const drums={};
+function setupDrum(id,items){const node=document.getElementById(id),track=document.createElement('div');track.className='drumTrack';node.append(track);drums[id]={node,track,items,value:null};}
+setupDrum('ampm',['AM','PM']);
+setupDrum('weekdayDrum',['SUN','MON','TUE','WED','THU','FRI','SAT']);
+setupDrum('monthDrum',['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']);
+setupDrum('dayDrum',Array.from({length:31},(_,i)=>String(i+1).padStart(2,'0')));
+setupDrum('yearDrum',Array.from({length:201},(_,i)=>String(1900+i)));
+function roll(id,value,instant=false){const d=drums[id];if(!d||d.value===value)return;
+const prior=d.value;d.value=value;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const oldIndex=d.items.indexOf(prior),nextIndex=d.items.indexOf(value);
+const from=(oldIndex>=0?prior:d.items[(nextIndex-1+d.items.length)%d.items.length]);
+d.track.replaceChildren();
+const before=document.createElement('div'),current=document.createElement('div'),after=document.createElement('div');
+for(const [el,v] of [[before,from],[current,value],[after,d.items[(nextIndex+1)%d.items.length]]]){el.className='drumItem';el.textContent=v;d.track.append(el)}
+d.track.style.transition='none';d.track.style.transform='translateY(0)';
+if(instant||reduce||prior===null){d.track.style.transform='translateY(calc(-1 * var(--item-h)))';return}
+requestAnimationFrame(()=>requestAnimationFrame(()=>{d.track.style.transition='transform .75s cubic-bezier(.15,.65,.22,1)';d.track.style.transform='translateY(calc(-1 * var(--item-h)))';}));
+}
+function draw(instant=false){const d=new Date(),hour=d.getHours(),h=is24?hour:hour%12||12;const value=String(h).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');const weekday=new Intl.DateTimeFormat('en-US',{weekday:'long'}).format(d),dayDate=new Intl.DateTimeFormat('en-US',{month:'long',day:'numeric',year:'numeric'}).format(d);ampm.style.display=is24?'none':'';roll('ampm',hour>=12?'PM':'AM',instant);roll('weekdayDrum',['SUN','MON','TUE','WED','THU','FRI','SAT'][d.getDay()],instant);roll('monthDrum',['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()],instant);roll('dayDrum',String(d.getDate()).padStart(2,'0'),instant);roll('yearDrum',String(d.getFullYear()),instant);board.setAttribute('aria-label','Current time '+h+':'+value.slice(2)+(is24?'':(hour>=12?' PM':' AM'))+', '+weekday+', '+dayDate);slots.forEach((el,i)=>{if(instant)face(el,value[i]);else if(el.dataset.v!==value[i])setTimeout(()=>flip(el,value[i]),i*75)})}
 function tick(){draw();setTimeout(tick,1000-new Date().getMilliseconds()+20)}
 const format=document.getElementById('format'),soundBtn=document.getElementById('sound'),full=document.getElementById('fullscreen');
 format.onclick=()=>{is24=!is24;localStorage.clock24=is24;format.textContent=is24?'12H':'24H';draw(true)};

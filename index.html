@@ -1,29 +1,30 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080808"><title>Split-Flap Clock</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090909;color:#f2bf68;font-family:Arial,sans-serif}
-main{width:100vw;height:100dvh;display:flex;justify-content:center;align-items:center;background:radial-gradient(ellipse at center,#201d17,#060606 75%);border:clamp(5px,.9vmin,14px) solid #28241d;box-shadow:inset 0 0 0 3px #5b513f}
+*:where(:not(svg):not(path)){box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--background);color:var(--accent);font-family:Arial,sans-serif}
+:root{--accent:#f2bf68;--background:#090909;--tile-bg:#1c1b18}
+main{width:100vw;height:100dvh;display:flex;justify-content:center;align-items:center;background:var(--background);border:clamp(5px,.9vmin,14px) solid #28241d;box-shadow:inset 0 0 0 3px #5b513f}
 #layout{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;gap:clamp(14px,2.5vh,32px);padding:2vh 1vw 4vh}
 #clock{display:flex;width:99%;justify-content:center;align-items:center;gap:min(.65vw,12px);user-select:none}
 .group{display:flex;gap:min(.27vw,7px)}
-.flap{position:relative;width:min(20.8vw,36vh);height:min(36.5vw,64vh);border:1px solid #4f473a;border-radius:5px;background:linear-gradient(#292721 0%,#1c1b18 49%,#10100d 51%,#181713 100%);box-shadow:inset 0 2px #544a37,0 9px 15px #000b;perspective:700px;overflow:hidden}
+.flap{position:relative;width:min(20.8vw,36vh);height:min(36.5vw,64vh);border:1px solid #4f473a;border-radius:5px;background:linear-gradient(180deg,color-mix(in srgb,var(--tile-bg),white 9%) 0%,var(--tile-bg) 49%,color-mix(in srgb,var(--tile-bg),black 42%) 51%,color-mix(in srgb,var(--tile-bg),black 12%) 100%);box-shadow:inset 0 2px #544a37,0 9px 15px #000b;perspective:700px;overflow:hidden}
 .half{position:absolute;left:0;width:100%;height:50%;overflow:hidden;backface-visibility:hidden}.top{top:0}.bottom{bottom:0}
 .glyph{position:absolute;left:0;width:100%;height:200%;display:flex;align-items:center;justify-content:center;font:900 min(32vw,59vh)/1 Impact,'Arial Narrow',sans-serif;transform:scaleX(.88);text-shadow:0 2px #000}.top .glyph{top:0}.bottom .glyph{bottom:0}
 .flap:after{content:'';position:absolute;z-index:10;top:50%;width:100%;height:3px;transform:translateY(-50%);background:#060606;box-shadow:0 1px #4e473b}
 .moveTop,.moveBottom{display:none;z-index:5}.flipping .moveTop,.flipping .moveBottom{display:block}
 .moveTop{transform-origin:bottom;animation:foldtop .2s ease-in both}.moveBottom{transform-origin:top;animation:foldbottom .2s .2s ease-out both}
 @keyframes foldtop{to{transform:rotateX(-90deg);filter:brightness(.5)}}@keyframes foldbottom{from{transform:rotateX(90deg);filter:brightness(.5)}to{transform:rotateX(0)}}
-.colon{display:flex;flex-direction:column;gap:12%;justify-content:center;align-items:center;width:min(3vw,5vh);height:min(36.5vw,64vh)}.colon i{width:clamp(4px,1vw,15px);height:clamp(4px,1vw,15px);background:#f2bf68}
+.colon{display:flex;flex-direction:column;gap:12%;justify-content:center;align-items:center;width:min(3vw,5vh);height:min(36.5vw,64vh)}.colon i{width:clamp(4px,1vw,15px);height:clamp(4px,1vw,15px);background:var(--accent)}
 #ampm{width:clamp(47px,7vw,115px);height:clamp(45px,9vh,94px);align-self:flex-end}
 #dateLine{display:flex;align-items:flex-start;justify-content:center;gap:clamp(7px,1.1vw,18px);max-width:98vw;flex-wrap:wrap}
 .drumUnit{display:flex;flex-direction:column;align-items:center;gap:5px}
-.drumLabel{font:700 clamp(10px,.9vw,14px) Arial,sans-serif;letter-spacing:.2em;color:#9d927a}
-.drum{--item-h:clamp(40px,5.5vw,72px);position:relative;width:clamp(65px,8vw,110px);height:var(--item-h);border:3px solid #3d362e;border-radius:9px;overflow:hidden;background:linear-gradient(#ebe8df,#cfc9bb);box-shadow:inset 0 1px 6px #0009,0 5px 12px #000b}
+.drumLabel{font:700 clamp(10px,.9vw,14px) Arial,sans-serif;letter-spacing:.2em;color:var(--accent)}
+.drum{--item-h:clamp(40px,5.5vw,72px);position:relative;width:clamp(65px,8vw,110px);height:var(--item-h);border:3px solid #3d362e;border-radius:9px;overflow:hidden;background:linear-gradient(180deg,color-mix(in srgb,var(--tile-bg),white 14%),var(--tile-bg) 55%,color-mix(in srgb,var(--tile-bg),black 15%));box-shadow:inset 0 1px 6px #0009,0 5px 12px #000b}
 .drum.wide{width:clamp(100px,13vw,175px)}.drum.year{width:clamp(95px,10vw,135px)}
 .drum:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to bottom,#0008,transparent 30%,#fff2 50%,transparent 72%,#0007);box-shadow:inset 6px 0 7px #0006,inset -6px 0 7px #0006}
 .drum:after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-left:2px solid #b9b3a5;border-right:2px solid #b9b3a5}
 .drumTrack{position:absolute;top:0;left:0;right:0;will-change:transform}
-.drumItem{height:var(--item-h);display:flex;align-items:center;justify-content:center;color:#3f4345;font:900 clamp(22px,3.15vw,47px) Impact,'Arial Narrow',sans-serif;letter-spacing:.02em;white-space:nowrap}
+.drumItem{height:var(--item-h);display:flex;align-items:center;justify-content:center;color:var(--accent);font:900 clamp(22px,3.15vw,47px) Impact,'Arial Narrow',sans-serif;letter-spacing:.02em;white-space:nowrap}
 .drum.wide .drumItem{font-size:clamp(21px,2.9vw,42px)}#ampm .drumItem{font-size:clamp(20px,2.5vw,38px)}
 @media(max-width:700px){.drum{--item-h:clamp(32px,8vw,48px);width:clamp(50px,13vw,76px)}.drum.wide{width:clamp(86px,23vw,120px)}.drum.year{width:clamp(77px,19vw,99px)}.drumItem{font-size:clamp(20px,5vw,27px)}.drum.wide .drumItem{font-size:clamp(18px,4.5vw,26px)}.drumLabel{font-size:9px}#ampm{width:clamp(37px,9vw,60px);height:clamp(32px,8vw,48px)}}
 #controls{position:absolute;right:15px;bottom:15px;display:flex;gap:8px;opacity:.06;transition:opacity .2s}main:hover #controls,#controls:focus-within{opacity:1}
@@ -31,11 +32,35 @@ main.screensaver{cursor:none}
 main.screensaver #controls,main.screensaver:hover #controls{opacity:0;pointer-events:none}
 main.screensaver:focus-within #controls{opacity:1;pointer-events:auto}
 main:fullscreen.screensaver #controls,main:fullscreen.screensaver:hover #controls{opacity:0;visibility:hidden;pointer-events:none}
-button{background:#302820;border:1px solid #665439;color:#f2bf68;border-radius:4px;padding:10px;cursor:pointer}
+main.screensaver #settingsPanel{display:none}
+button{background:#302820;border:1px solid #665439;color:var(--accent);border-radius:4px;padding:10px;cursor:pointer}
 @media(max-width:700px){#layout{gap:16px}#controls{opacity:.4}.flap{width:20.5vw;height:39vw}.glyph{font-size:34vw}.colon{height:39vw}#ampm{align-self:flex-end}}
 @media(max-height:600px){#layout{gap:12px;padding:1vh 1vw}.flap{width:min(20vw,31vh);height:min(35vw,56vh)}.glyph{font-size:min(30vw,51vh)}.colon{height:min(35vw,56vh)}#dateLine{gap:6px}.drum{--item-h:clamp(30px,6vh,45px)}}
 @media(prefers-reduced-motion:reduce){.flipping .moveTop,.flipping .moveBottom{display:none}}
-</style></head><body><main id="board" role="timer"><div id="layout"><div id="clock" aria-hidden="true"><div class="group" id="hours"></div><div class="colon"><i></i><i></i></div><div class="group" id="minutes"></div><div id="ampm" class="drum" aria-hidden="true"></div></div><div id="dateLine" aria-hidden="true"><div class="drumUnit"><span class="drumLabel">DAY</span><div id="weekdayDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">MONTH</span><div id="monthDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">DATE</span><div id="dayDrum" class="drum"></div></div><div class="drumUnit"><span class="drumLabel">YEAR</span><div id="yearDrum" class="drum year"></div></div></div></div><div id="controls"><button id="format">24H</button><button id="sound">SOUND OFF</button><button id="fullscreen">FULLSCREEN</button></div></main>
+#settingsPanel[hidden]{display:none!important}
+#settingsPanel{position:fixed;z-index:40;right:16px;bottom:68px;width:min(400px,calc(100vw - 32px));max-height:calc(100dvh - 90px);overflow-y:auto;padding:18px;background:#211e1a;color:#f1e5d1;border:2px solid #62543e;border-radius:10px;box-shadow:0 20px 75px #000e;font-size:14px}
+#settingsPanel h2{font-size:19px;margin:0 0 14px;color:#f2bf68}
+#settingsPanel .setting{margin:12px 0}
+#settingsPanel label{display:block;margin-bottom:6px;font-weight:700;letter-spacing:.025em}
+#settingsPanel .colorRow{display:flex;gap:10px;align-items:center}
+#settingsPanel input[type=color]{width:55px;height:40px;border:1px solid #776b55;border-radius:5px;background:#161513;padding:3px;cursor:pointer}
+#settingsPanel input[type=text]{flex:1;min-width:0;padding:10px;background:#0e0d0c;color:#fff;border:1px solid #776b55;border-radius:4px;font:600 15px monospace}
+#settingsPanel input.invalid{border-color:#e66e6e}
+#settingsPanel .palette{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+#settingsPanel .palette button{width:37px;height:37px;padding:0;border:2px solid #84745a;border-radius:50%;box-shadow:0 0 0 1px #0008}
+#settingsPanel .palette button:focus-visible,#settingsPanel input:focus-visible{outline:2px solid #f2bf68;outline-offset:2px}
+#settingsPanel .actions{display:flex;gap:10px;margin-top:16px}
+#settingsPanel .actions button{flex:1}
+#settingsPanel p{color:#bdb19c;font-size:12px;line-height:1.45}
+@media(max-width:700px){#settingsPanel{bottom:60px;padding:15px}}
+</style></head><body><main id="board" role="timer"><div id="layout"><div id="clock" aria-hidden="true"><div class="group" id="hours"></div><div class="colon"><i></i><i></i></div><div class="group" id="minutes"></div><div id="ampm" class="drum" aria-hidden="true"></div></div><div id="dateLine" aria-hidden="true"><div class="drumUnit"><span class="drumLabel">DAY</span><div id="weekdayDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">MONTH</span><div id="monthDrum" class="drum wide"></div></div><div class="drumUnit"><span class="drumLabel">DATE</span><div id="dayDrum" class="drum"></div></div><div class="drumUnit"><span class="drumLabel">YEAR</span><div id="yearDrum" class="drum year"></div></div></div></div><div id="controls"><button id="settingsButton" type="button" aria-expanded="false" aria-controls="settingsPanel">SETTINGS</button><button id="format">24H</button><button id="sound">SOUND OFF</button><button id="fullscreen">FULLSCREEN</button></div><section id="settingsPanel" aria-label="Clock appearance settings" hidden>
+<h2>Clock appearance</h2>
+<div class="setting"><label for="accentHex">Lettering and digits</label><div class="colorRow"><input id="accentPicker" type="color" aria-label="Choose lettering color"><input id="accentHex" type="text" spellcheck="false" maxlength="7" placeholder="#F2BF68" aria-label="Lettering HEX color"></div><div id="accentPalette" class="palette" aria-label="Lettering presets"></div></div>
+<div class="setting"><label for="backgroundHex">Screen background</label><div class="colorRow"><input id="backgroundPicker" type="color" aria-label="Choose screen background color"><input id="backgroundHex" type="text" spellcheck="false" maxlength="7" placeholder="#090909" aria-label="Background HEX color"></div><div id="backgroundPalette" class="palette" aria-label="Background presets"></div></div>
+<div class="setting"><label for="tileHex">Mechanical panel background</label><div class="colorRow"><input id="tilePicker" type="color" aria-label="Choose panel background color"><input id="tileHex" type="text" spellcheck="false" maxlength="7" placeholder="#1C1B18" aria-label="Panel HEX color"></div><div id="tilePalette" class="palette" aria-label="Panel presets"></div></div>
+<p>Choose a swatch, use the color picker, or enter an exact HEX code. Changes are saved automatically on this device.</p>
+<div class="actions"><button id="resetColors" type="button">RESET COLORS</button><button id="closeSettings" type="button">DONE</button></div>
+</section></main>
 <script>
 (()=>{const slots=[],board=document.getElementById('board'),ampm=document.getElementById('ampm');let is24=localStorage.clock24==='true',sound=localStorage.clockSound==='true',ctx=null;
 function half(v,part,extra=''){const el=document.createElement('div');el.className='half '+part+' '+extra;const glyph=document.createElement('span');glyph.className='glyph';glyph.textContent=v;el.append(glyph);return el}
@@ -79,5 +104,35 @@ for(const eventName of ['pointermove','pointerdown','keydown','touchstart']){
   document.addEventListener(eventName,wake,{passive:true});
 }
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)wake();else clearTimeout(idleTimer)});
+const defaults={accent:'#f2bf68',background:'#090909',tile:'#1c1b18'};
+const themes={
+ accent:['#F2BF68','#FFFFFF','#FFCE00','#F97316','#EF4444','#F472B6','#A78BFA','#60A5FA','#34D399','#91E76D','#D8C5A3','#B0B0B0'],
+ background:['#090909','#000000','#171717','#1C2430','#0B1F24','#17251A','#211322','#372319','#F2EFE8','#FFFFFF'],
+ tile:['#1C1B18','#090909','#292929','#263547','#1D3A32','#392A40','#473225','#F2EFE8','#FFFFFF']
+};
+function validHex(v){const h=v.trim();return /^#?[0-9a-fA-F]{6}$/.test(h)?('#'+h.replace('#','').toLowerCase()):null}
+function setColor(key,hex){const color=validHex(hex);if(!color)return false;
+ document.documentElement.style.setProperty(key==='background'?'--background':key==='tile'?'--tile-bg':'--accent',color);
+ document.getElementById(key+'Hex').value=color.toUpperCase();
+ document.getElementById(key+'Hex').classList.remove('invalid');
+ document.getElementById(key+'Picker').value=color;
+ try{localStorage.setItem('clockColor_'+key,color)}catch(e){}
+ return true;
+}
+for(const key of Object.keys(defaults)){
+ const picker=document.getElementById(key+'Picker'),hex=document.getElementById(key+'Hex'),palette=document.getElementById(key+'Palette');
+ for(const color of themes[key]){const swatch=document.createElement('button');swatch.type='button';swatch.style.backgroundColor=color;swatch.title=color;swatch.setAttribute('aria-label','Set '+key+' to '+color);swatch.addEventListener('click',()=>setColor(key,color));palette.append(swatch)}
+ picker.addEventListener('input',()=>setColor(key,picker.value));
+ hex.addEventListener('input',()=>{const value=validHex(hex.value);hex.classList.toggle('invalid',!value);if(value)setColor(key,value)});
+ hex.addEventListener('blur',()=>{if(!validHex(hex.value))hex.value=picker.value.toUpperCase();hex.classList.remove('invalid')});
+ let stored=null;try{stored=localStorage.getItem('clockColor_'+key)}catch(e){}
+ setColor(key,validHex(stored||'')||defaults[key]);
+}
+const panel=document.getElementById('settingsPanel'),settingsButton=document.getElementById('settingsButton');
+function closeSettings(){panel.hidden=true;settingsButton.setAttribute('aria-expanded','false');wake()}
+settingsButton.addEventListener('click',()=>{panel.hidden=!panel.hidden;settingsButton.setAttribute('aria-expanded',String(!panel.hidden));wake()});
+document.getElementById('closeSettings').addEventListener('click',closeSettings);
+document.getElementById('resetColors').addEventListener('click',()=>{for(const key of Object.keys(defaults))setColor(key,defaults[key])});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)closeSettings()});
 format.textContent=is24?'12H':'24H';soundBtn.textContent=sound?'SOUND ON':'SOUND OFF';draw(true);tick();wake()})();
 </script></body></html>

@@ -15,6 +15,9 @@ main{width:100vw;height:100dvh;display:flex;justify-content:center;align-items:c
 .colon{display:flex;flex-direction:column;gap:12%;justify-content:center;align-items:center;width:min(3vw,4vh);height:min(32vw,47vh)}.colon i{width:clamp(4px,1vw,15px);height:clamp(4px,1vw,15px);background:#f2bf68}
 #ampm{font:900 clamp(15px,4vw,60px) Impact,Arial,sans-serif;align-self:flex-end;padding-bottom:1vw;min-width:2ch}
 #controls{position:absolute;right:15px;bottom:15px;display:flex;gap:8px;opacity:.06;transition:opacity .2s}main:hover #controls,#controls:focus-within{opacity:1}
+main.screensaver{cursor:none}
+main.screensaver #controls,main.screensaver:hover #controls{opacity:0;pointer-events:none}
+main.screensaver:focus-within #controls{opacity:1;pointer-events:auto}
 button{background:#302820;border:1px solid #665439;color:#f2bf68;border-radius:4px;padding:10px;cursor:pointer}
 @media(max-width:700px){#controls{opacity:.4}.flap{width:19vw;height:36vw}.glyph{font-size:32vw}.colon{height:36vw}#ampm{font-size:5vw}}
 @media(prefers-reduced-motion:reduce){.flipping .moveTop,.flipping .moveBottom{display:none}}
@@ -32,5 +35,16 @@ const format=document.getElementById('format'),soundBtn=document.getElementById(
 format.onclick=()=>{is24=!is24;localStorage.clock24=is24;format.textContent=is24?'12H':'24H';draw(true)};
 soundBtn.onclick=()=>{sound=!sound;localStorage.clockSound=sound;soundBtn.textContent=sound?'SOUND ON':'SOUND OFF'};
 full.onclick=()=>document.fullscreenElement?document.exitFullscreen():board.requestFullscreen?.();document.addEventListener('fullscreenchange',()=>full.textContent=document.fullscreenElement?'EXIT FULLSCREEN':'FULLSCREEN');board.addEventListener('dblclick',e=>{if(!e.target.closest('button'))full.click()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)draw(true)});
-format.textContent=is24?'12H':'24H';soundBtn.textContent=sound?'SOUND ON':'SOUND OFF';draw(true);tick()})();
+// Automatically hide controls and pointer after five seconds of inactivity.
+let idleTimer;
+function wake(){
+  board.classList.remove('screensaver');
+  clearTimeout(idleTimer);
+  idleTimer=setTimeout(()=>{if(!document.hidden)board.classList.add('screensaver')},5000);
+}
+for(const eventName of ['pointermove','pointerdown','keydown','touchstart']){
+  document.addEventListener(eventName,wake,{passive:true});
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)wake();else clearTimeout(idleTimer)});
+format.textContent=is24?'12H':'24H';soundBtn.textContent=sound?'SOUND ON':'SOUND OFF';draw(true);tick();wake()})();
 </script></body></html>
